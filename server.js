@@ -7,11 +7,10 @@ const customErrorHandler = require("./middlewares/errors/customErrorHandler");
 const app = express();
 
 app.use(express.json());
-app.use("/api",routers);
-
+app.use("/api", routers);
 
 dotenv.config({
-    path: "./config/env/config.env"
+    path: "./config/env/config.env",
 });
 
 //MongoDb
@@ -21,6 +20,6 @@ const PORT = process.env.PORT;
 
 app.use(customErrorHandler);
 
-app.listen(PORT,() => {
-    console.log("App Started on "+PORT + " Port");
+app.listen(PORT, () => {
+    console.log("App Started on " + PORT + " Port");
 });
