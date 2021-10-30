@@ -72,21 +72,26 @@ UserSchema.methods.generateJwtFromUser = function () {
 
 //Pre Hooks
 UserSchema.pre("save", function (next) {
-    if (this.isModified("password")) {
-        next();
-    }
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-            next(err);
-        }
-        bcrypt.hash(this.password, salt, (err, hash) => {
+    const saltRounds = 10;
+    if (this.isModified("password") || this.isNew) {
+        bcrypt.genSalt(saltRounds, (err, salt) => {
             if (err) {
                 next(err);
+            } else {
+                bcrypt.hash(this.password, salt, (err, hash) => {
+                    if (err) {
+                        next(err);
+                    } else {
+                        this.password = hash;
+                        console.log(this.password);
+                        next();
+                    }
+                });
             }
-            this.password = hash;
-            next();
         });
-    });
+    } else {
+        return next();
+    }
 });
 
 module.exports = mongoose.model("User", UserSchema);
